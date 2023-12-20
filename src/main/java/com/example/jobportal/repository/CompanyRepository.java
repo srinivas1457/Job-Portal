@@ -15,5 +15,7 @@ public interface CompanyRepository extends JpaRepository<Company, Integer>{
 
 	@Query("select c from Company c where c.businessType= ?1")
 	List<Company> findCompanyByBusinessType(BusinessType businessType);
+
+	List<Company> findByLocation(String location);
 	
 }

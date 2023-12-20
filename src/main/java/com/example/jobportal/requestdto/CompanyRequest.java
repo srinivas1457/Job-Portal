@@ -24,7 +24,7 @@ public class CompanyRequest {
 	private String companyName;
 	
 	private LocalDate foundedDate;
-	
+	private String location;
 	private String description;
 	private BusinessType businessType;
 	
@@ -34,7 +34,7 @@ public class CompanyRequest {
 	private String contactEmail;
 	
 	
-	private String contactPhno;
+	private long contactPhno;
 	
 	private String website;
 
@@ -68,17 +68,23 @@ public class CompanyRequest {
 	public void setContactEmail(String contactEmail) {
 		this.contactEmail = contactEmail;
 	}
-	public String getContactPhno() {
-		return contactPhno;
-	}
-	public void setContactPhno(String contactPhno) {
-		this.contactPhno = contactPhno;
-	}
 	public String getWebsite() {
 		return website;
 	}
 	public void setWebsite(String website) {
 		this.website = website;
+	}
+	public String getLocation() {
+		return location;
+	}
+	public void setLocation(String location) {
+		this.location = location;
+	}
+	public long getContactPhno() {
+		return contactPhno;
+	}
+	public void setContactPhno(long contactPhno) {
+		this.contactPhno = contactPhno;
 	}
 	
 	

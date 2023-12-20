@@ -2,6 +2,7 @@ package com.example.jobportal.responsedto;
 
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
@@ -17,15 +18,16 @@ public class CompanyResponse {
 	private String description;
 	private BusinessType businessType;
 	private String contactEmail;
-	private String contactPhno;
+	private long contactPhno;
 	private String website;
+	private String location;
 	
-	private HashMap<String, String> options;
+	private Map<String, String> options;
 	
-	public HashMap<String, String> getOptions() {
+	public Map<String, String> getOptions() {
 		return options;
 	}
-	public void setOptions(HashMap<String, String> options) {
+	public void setOptions(Map<String, String> options) {
 		this.options = options;
 	}
 	public int getCompanyId() {
@@ -64,11 +66,18 @@ public class CompanyResponse {
 	public void setContactEmail(String contactEmail) {
 		this.contactEmail = contactEmail;
 	}
-	public String getContactPhno() {
+	
+	public long getContactPhno() {
 		return contactPhno;
 	}
-	public void setContactPhno(String contactPhno) {
+	public void setContactPhno(long contactPhno) {
 		this.contactPhno = contactPhno;
+	}
+	public String getLocation() {
+		return location;
+	}
+	public void setLocation(String location) {
+		this.location = location;
 	}
 	public String getWebsite() {
 		return website;
@@ -76,10 +85,4 @@ public class CompanyResponse {
 	public void setWebsite(String website) {
 		this.website = website;
 	}
-	
-	
-	
-	
-	
-
 }

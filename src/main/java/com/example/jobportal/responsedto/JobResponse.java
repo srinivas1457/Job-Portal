@@ -1,14 +1,35 @@
 package com.example.jobportal.responsedto;
 
 import java.time.LocalDate;
+import java.util.Map;
+
+import com.example.jobportal.enums.JobStatus;
 
 public class JobResponse {
 	private int jobId;
 	private String jobTitle;
-	private String jobLocation;
 	private String jobDescription;
+	private double annualSal;
 	private LocalDate openingDate;
 	private LocalDate closingDate;
+	
+	Map<String, String>options;
+
+	public Map<String, String> getOptions() {
+		return options;
+	}
+
+	public void setOptions(Map<String, String> options) {
+		this.options = options;
+	}
+
+	public double getAnnualSal() {
+		return annualSal;
+	}
+
+	public void setAnnualSal(double annualSal) {
+		this.annualSal = annualSal;
+	}
 
 	public LocalDate getClosingDate() {
 		return closingDate;
@@ -32,14 +53,6 @@ public class JobResponse {
 
 	public void setJobTitle(String jobTitle) {
 		this.jobTitle = jobTitle;
-	}
-
-	public String getJobLocation() {
-		return jobLocation;
-	}
-
-	public void setJobLocation(String jobLocation) {
-		this.jobLocation = jobLocation;
 	}
 
 	public String getJobDescription() {

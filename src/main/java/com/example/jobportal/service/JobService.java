@@ -14,9 +14,12 @@ public interface JobService {
 	public ResponseEntity<ResponseStructure<JobResponse>> updateById(JobRequest  jobRequest,int jobId);
 	public ResponseEntity<ResponseStructure<JobResponse>> findByJobId(int jobId);
 	public ResponseEntity<ResponseStructure<List<JobResponse>>> findByJobTitle(String jobTitle);
-	public ResponseEntity<ResponseStructure<List<JobResponse>>> findByLocation(String jobLocation);
-	public ResponseEntity<ResponseStructure<JobResponse>> deleteByJobId(int jobId);
 	
+	public ResponseEntity<ResponseStructure<JobResponse>> deleteByJobId(int jobId);
+	public ResponseEntity<ResponseStructure<List<JobResponse>>> findAll();
+	
+	public ResponseEntity<ResponseStructure<List<JobResponse>>> findByJobBasedonCompanyId(int companyId);
+	public ResponseEntity<ResponseStructure<List<JobResponse>>> findByJobsBasedonCompanyLocation(String companyLocation);
 	
 
 }

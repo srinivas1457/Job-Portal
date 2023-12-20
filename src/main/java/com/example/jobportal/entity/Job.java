@@ -21,14 +21,21 @@ public class Job {
 	private int jobId;
 
 	private String jobTitle;
-	private String jobLocation;
 	private String jobDescription;
-	private JobStatus jobStatus;
 	private LocalDate openingDate;
 	private LocalDate closingDate;
-	
+	private double annualSal;
+
 	@ManyToOne
 	private Company company;
+
+	public double getAnnualSal() {
+		return annualSal;
+	}
+
+	public void setAnnualSal(double annualSal) {
+		this.annualSal = annualSal;
+	}
 
 	public LocalDate getOpeningDate() {
 		return openingDate;
@@ -36,14 +43,6 @@ public class Job {
 
 	public void setOpeningDate(LocalDate openingDate) {
 		this.openingDate = openingDate;
-	}
-
-	public String getJobLocation() {
-		return jobLocation;
-	}
-
-	public void setJobLocation(String jobLocation) {
-		this.jobLocation = jobLocation;
 	}
 
 	public LocalDate getClosingDate() {

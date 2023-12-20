@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.example.jobportal.entity.Company;
+import com.example.jobportal.entity.Job;
 import com.example.jobportal.entity.User;
 import com.example.jobportal.enums.BusinessType;
 import com.example.jobportal.enums.UserRole;
@@ -19,11 +20,14 @@ import com.example.jobportal.exceptionhandling.CompanyNotFoundByIdException;
 import com.example.jobportal.exceptionhandling.CompanyNotFoundByNameException;
 import com.example.jobportal.exceptionhandling.CompanyNotFoundException;
 import com.example.jobportal.exceptionhandling.IllegalAccessException;
+import com.example.jobportal.exceptionhandling.JobNotFoundByTitleException;
 import com.example.jobportal.exceptionhandling.UserNotFoundException;
 import com.example.jobportal.repository.CompanyRepository;
 import com.example.jobportal.repository.UserRepository;
 import com.example.jobportal.requestdto.CompanyRequest;
 import com.example.jobportal.responsedto.CompanyResponse;
+import com.example.jobportal.responsedto.JobResponse;
+import com.example.jobportal.responsedto.UserResponse;
 import com.example.jobportal.service.CompanyService;
 import com.example.jobportal.utility.ResponseStructure;
 
@@ -35,29 +39,31 @@ public class CompanyServiceImpl implements CompanyService {
 	@Autowired
 	private CompanyRepository companyRepo;
 
-	private Company convertToCompany(CompanyRequest compRq, Company comp) {
-		comp.setBusinessType(compRq.getBusinessType());
-		comp.setCompanyName(compRq.getCompanyName());
-		comp.setContactEmail(compRq.getContactEmail());
-		comp.setContactPhno(compRq.getContactPhno());
-		comp.setDescription(compRq.getDescription());
-		comp.setFoundedDate(compRq.getFoundedDate());
-		comp.setWebsite(compRq.getWebsite());
+	private Company convertToCompany(CompanyRequest companyRequest, Company company) {
+		company.setBusinessType(companyRequest.getBusinessType());
+		company.setCompanyName(companyRequest.getCompanyName());
+		company.setContactEmail(companyRequest.getContactEmail());
+		company.setContactPhno(companyRequest.getContactPhno());
+		company.setDescription(companyRequest.getDescription());
+		company.setFoundedDate(companyRequest.getFoundedDate());
+		company.setWebsite(companyRequest.getWebsite());
+		company.setLocation(companyRequest.getLocation());
 
-		return comp;
+		return company;
 	}
 
-	private CompanyResponse convertToCompResponse(Company comp) {
-		CompanyResponse respDto = new CompanyResponse();
-		respDto.setBusinessType(comp.getBusinessType());
-		respDto.setCompanyId(comp.getCompanyId());
-		respDto.setCompanyName(comp.getCompanyName());
-		respDto.setContactEmail(comp.getContactEmail());
-		respDto.setContactPhno(comp.getContactPhno());
-		respDto.setDescription(comp.getDescription());
-		respDto.setFoundedDate(comp.getFoundedDate());
-		respDto.setWebsite(comp.getWebsite());
-		return respDto;
+	private CompanyResponse convertToCompResponse(Company company) {
+		CompanyResponse companyResponse = new CompanyResponse();
+		companyResponse.setBusinessType(company.getBusinessType());
+		companyResponse.setCompanyId(company.getCompanyId());
+		companyResponse.setCompanyName(company.getCompanyName());
+		companyResponse.setContactEmail(company.getContactEmail());
+		companyResponse.setContactPhno(company.getContactPhno());
+		companyResponse.setDescription(company.getDescription());
+		companyResponse.setFoundedDate(company.getFoundedDate());
+		companyResponse.setWebsite(company.getWebsite());
+		companyResponse.setLocation(company.getLocation());
+		return companyResponse;
 
 	}
 
@@ -92,7 +98,7 @@ public class CompanyServiceImpl implements CompanyService {
 	}
 
 	@Override
-	public ResponseEntity<ResponseStructure<CompanyResponse>> findCompanyById(int companyId) {
+	public ResponseEntity<ResponseStructure<CompanyResponse>> findByCompanyId(int companyId) {
 		Optional<Company> optional = companyRepo.findById(companyId);
 		if (!optional.isEmpty()) {
 			Company company = optional.get();
@@ -112,7 +118,7 @@ public class CompanyServiceImpl implements CompanyService {
 	}
 
 	@Override
-	public ResponseEntity<ResponseStructure<List<CompanyResponse>>> findCompanyByName(String companyName) {
+	public ResponseEntity<ResponseStructure<List<CompanyResponse>>> findByCompanyName(String companyName) {
 		List<Company> companyList = companyRepo.findByName(companyName);
 		if (!companyList.isEmpty()) {
 			List<CompanyResponse> list = new ArrayList<>();
@@ -155,7 +161,7 @@ public class CompanyServiceImpl implements CompanyService {
 
 			ResponseStructure<List<CompanyResponse>> structure = new ResponseStructure<>();
 			structure.setStatusCode(HttpStatus.FOUND.value());
-			structure.setMessage("Movie Records Found");
+			structure.setMessage("Company Records Found");
 			structure.setData(list);
 
 			return new ResponseEntity<ResponseStructure<List<CompanyResponse>>>(structure, HttpStatus.FOUND);
@@ -165,7 +171,7 @@ public class CompanyServiceImpl implements CompanyService {
 	}
 
 	@Override
-	public ResponseEntity<ResponseStructure<CompanyResponse>> updateCompanyById(CompanyRequest companyRequest,
+	public ResponseEntity<ResponseStructure<CompanyResponse>> updateByCompanyId(CompanyRequest companyRequest,
 			int companyId) {
 		Optional<Company> optional = companyRepo.findById(companyId);
 		if (optional.isPresent()) {
@@ -206,6 +212,56 @@ public class CompanyServiceImpl implements CompanyService {
 		} else {
 			throw new CompanyNotFoundByIdException("Company data is not present");
 		}
+	}
+	
+	
+	@Override
+	public ResponseEntity<ResponseStructure<List<CompanyResponse>>> findAll() {
+
+		List<Company> companyList = companyRepo.findAll();
+		if (!companyList.isEmpty()) {
+			List<CompanyResponse> list = new ArrayList<>();
+			for (Company  company : companyList) {
+				CompanyResponse response = convertToCompResponse(company);
+				list.add(response);
+			}
+
+			ResponseStructure<List<CompanyResponse>> structure = new ResponseStructure<>();
+			structure.setStatusCode(HttpStatus.FOUND.value());
+			structure.setMessage("Company Records Found");
+			structure.setData(list);
+
+			return new ResponseEntity<ResponseStructure<List<CompanyResponse>>>(structure, HttpStatus.FOUND);
+		} else {
+			throw new CompanyNotFoundException("Companies Data Not Present!!");
+		}
+	}
+
+	@Override
+	public ResponseEntity<ResponseStructure<List<CompanyResponse>>> findByLocation(String companyLocation) {
+			List<Company> companyList = companyRepo.findByLocation(companyLocation);
+			if (!companyList.isEmpty()) {
+				List<CompanyResponse> list = new ArrayList<>();
+				for (Company company : companyList) {
+					CompanyResponse companyResponse=convertToCompResponse(company);
+
+					Map<String, String> o = new HashMap<>();
+//						o.put("reviews", "/" + movie.getMovieId() + "/reviews");
+//						movieResponse.setOptions(o);
+
+					list.add(companyResponse);
+				}
+				ResponseStructure<List<CompanyResponse>> responseStructure = new ResponseStructure<>();
+				responseStructure.setStatusCode(HttpStatus.FOUND.value());
+				responseStructure.setMessage("Company Records Found");
+				responseStructure.setData(list);
+
+				return new ResponseEntity<ResponseStructure<List<CompanyResponse>>>(responseStructure, HttpStatus.FOUND);
+
+			} else {
+				throw new JobNotFoundByTitleException("Company data is not present");
+			}
+		
 	}
 
 }

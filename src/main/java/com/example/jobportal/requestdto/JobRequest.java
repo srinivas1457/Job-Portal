@@ -4,8 +4,8 @@ import java.time.LocalDate;
 
 public class JobRequest {
 	private String jobTitle;
-	private String jobLocation;
 	private String jobDescription;
+	private double annualSal;
 	private LocalDate openingDate;
 	private LocalDate closingDate;
 
@@ -17,12 +17,12 @@ public class JobRequest {
 		this.jobTitle = jobTitle;
 	}
 
-	public String getJobLocation() {
-		return jobLocation;
+	public double getAnnualSal() {
+		return annualSal;
 	}
 
-	public void setJobLocation(String jobLocation) {
-		this.jobLocation = jobLocation;
+	public void setAnnualSal(double annualSal) {
+		this.annualSal = annualSal;
 	}
 
 	public String getJobDescription() {

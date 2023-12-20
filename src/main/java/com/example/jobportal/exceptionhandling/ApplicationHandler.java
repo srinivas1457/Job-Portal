@@ -44,7 +44,7 @@ public class ApplicationHandler extends ResponseEntityExceptionHandler {
 	public ResponseEntity<ErrorStructure<String>> UserNotFoundById(UserNotFoundException exp) {
 		ErrorStructure<String> es = new ErrorStructure<String>();
 		es.setStatusCode(HttpStatus.NOT_FOUND.value());
-		es.setMessage(exp.getMessage()); // message whate we threw in service
+		es.setMessage(exp.getMessage()); // message what we throw in service
 		es.setErrordata(" USER WITH GIVEN ID NOT PRESENT ");
 
 		return new ResponseEntity<ErrorStructure<String>>(es, HttpStatus.NOT_FOUND);
@@ -66,7 +66,7 @@ public class ApplicationHandler extends ResponseEntityExceptionHandler {
 	public ResponseEntity<ErrorStructure<String>> illegalAccessExcp(IllegalAccessException exp) {
 		ErrorStructure<String> es = new ErrorStructure<String>();
 		es.setStatusCode(HttpStatus.NOT_FOUND.value());
-		es.setMessage(exp.getMessage()); // message whate we threw in service
+		es.setMessage(exp.getMessage()); // message what we throw in service
 		es.setErrordata(" USER NOT AUTHORISED FOR THIS OPERATION");
 
 		return new ResponseEntity<ErrorStructure<String>>(es, HttpStatus.NOT_FOUND);

@@ -14,8 +14,10 @@ import org.springframework.stereotype.Service;
 import com.example.jobportal.entity.Company;
 import com.example.jobportal.entity.Job;
 import com.example.jobportal.exceptionhandling.CompanyNotFoundByIdException;
+import com.example.jobportal.exceptionhandling.JobNotFoundByCompanyIdException;
 import com.example.jobportal.exceptionhandling.JobNotFoundByIdException;
 import com.example.jobportal.exceptionhandling.JobNotFoundByTitleException;
+import com.example.jobportal.exceptionhandling.JobNotFoundException;
 import com.example.jobportal.repository.CompanyRepository;
 import com.example.jobportal.repository.JobRepository;
 import com.example.jobportal.repository.UserRepository;
@@ -39,9 +41,7 @@ public class JobServiceImpl implements JobService {
 	private Job convertJobRequestTOJob(JobRequest jobRequest) {
 		Job job = new Job();
 		job.setJobTitle(jobRequest.getJobTitle());
-		job.setJobLocation(jobRequest.getJobLocation());
 		job.setJobDescription(jobRequest.getJobDescription());
-		job.setJobLocation(jobRequest.getJobLocation());
 		job.setOpeningDate(null);
 
 		return job;
@@ -49,9 +49,7 @@ public class JobServiceImpl implements JobService {
 
 	private Job convertToJob(JobRequest jobRequest, Job existingJob) {
 		existingJob.setJobTitle(jobRequest.getJobTitle());
-		existingJob.setJobLocation(jobRequest.getJobLocation());
 		existingJob.setJobDescription(jobRequest.getJobDescription());
-		existingJob.setJobLocation(jobRequest.getJobLocation());
 		existingJob.setOpeningDate(null);
 		return existingJob;
 	}
@@ -61,7 +59,6 @@ public class JobServiceImpl implements JobService {
 		jobResponse.setJobId(job.getJobId());
 		jobResponse.setJobTitle(job.getJobTitle());
 		jobResponse.setJobDescription(job.getJobDescription());
-		jobResponse.setJobLocation(null);
 		return jobResponse;
 	}
 
@@ -129,32 +126,31 @@ public class JobServiceImpl implements JobService {
 		}
 	}
 
-	@Override
-	public ResponseEntity<ResponseStructure<List<JobResponse>>> findByLocation(String jobLocation) {
-		List<Job> jobList = jobRepo.findByJobLocation(jobLocation);
-		if (!jobList.isEmpty()) {
-			List<JobResponse> list = new ArrayList<>();
-			for (Job job : jobList) {
-				JobResponse jobResponse = convertJobToJobResponse(job);
-
-				Map<String, String> o = new HashMap<>();
-//					o.put("reviews", "/" + movie.getMovieId() + "/reviews");
-//					movieResponse.setOptions(o);
-
-				list.add(jobResponse);
-			}
-			ResponseStructure<List<JobResponse>> responseStructure = new ResponseStructure<>();
-			responseStructure.setStatusCode(HttpStatus.FOUND.value());
-			responseStructure.setMessage("Job Records Found");
-			responseStructure.setData(list);
-
-			return new ResponseEntity<ResponseStructure<List<JobResponse>>>(responseStructure, HttpStatus.FOUND);
-
-		} else {
-			throw new JobNotFoundByTitleException("Job data is not present");
-		}
-
-	}
+//	@Override
+//	public ResponseEntity<ResponseStructure<List<JobResponse>>> findByLocation(String jobLocation) {
+//		List<Job> jobList = jobRepo.findByJobLocation(jobLocation);
+//		if (!jobList.isEmpty()) {
+//			List<JobResponse> list = new ArrayList<>();
+//			for (Job job : jobList) {
+//				JobResponse jobResponse = convertJobToJobResponse(job);
+//
+//				Map<String, String> o = new HashMap<>();
+////					o.put("reviews", "/" + movie.getMovieId() + "/reviews");
+////					movieResponse.setOptions(o);
+//
+//				list.add(jobResponse);
+//			}
+//			ResponseStructure<List<JobResponse>> responseStructure = new ResponseStructure<>();
+//			responseStructure.setStatusCode(HttpStatus.FOUND.value());
+//			responseStructure.setMessage("Job Records Found");
+//			responseStructure.setData(list);
+//
+//			return new ResponseEntity<ResponseStructure<List<JobResponse>>>(responseStructure, HttpStatus.FOUND);
+//
+//		} else {
+//			throw new JobNotFoundByTitleException("Job data is not present");
+//		}
+//	}
 
 	@Override
 	public ResponseEntity<ResponseStructure<JobResponse>> deleteByJobId(int jobId) {
@@ -196,6 +192,97 @@ public class JobServiceImpl implements JobService {
 
 		} else {
 			throw new JobNotFoundByIdException("Job data is not present");
+		}
+	}
+
+	@Override
+	public ResponseEntity<ResponseStructure<List<JobResponse>>> findAll() {
+		List<Job> jobs = jobRepo.findAll();
+		if (!jobs.isEmpty()) {
+			List<JobResponse> list = new ArrayList<>();
+			for (Job job : jobs) {
+				JobResponse jobResponse = convertJobToJobResponse(job);
+				list.add(jobResponse);
+			}
+
+			ResponseStructure<List<JobResponse>> structure = new ResponseStructure<>();
+			structure.setStatusCode(HttpStatus.FOUND.value());
+			structure.setMessage("Job Records Found");
+			structure.setData(list);
+
+			return new ResponseEntity<ResponseStructure<List<JobResponse>>>(structure, HttpStatus.FOUND);
+		} else {
+			throw new JobNotFoundException("Jobs Data Not Present!!");
+		}
+	}
+
+	@Override
+	public ResponseEntity<ResponseStructure<List<JobResponse>>> findByJobsBasedonCompanyLocation(
+			String companyLocation) {
+		List<Company> companies = companyRepo.findByLocation(companyLocation);
+//		if (!companies.isEmpty()) {
+			
+//			List<Job> jobList=jobRepo.findByCompanyId();
+//			if (!reviewsList.isEmpty()) {
+//				List<ReviewResponse> list = new ArrayList<>();
+//				for (Review review : reviewsList) {
+//
+//					ReviewResponse reviewResponse = convertReviewResponse(review);
+//
+//					Map<String, String> userHyperLink = new HashMap<>();
+//					userHyperLink.put("users", "/users/"+review.getUser().getUserId());
+//					reviewResponse.setOptions(userHyperLink);
+//					list.add(reviewResponse);
+//		
+//				}
+//
+//				ResponseStructure<List<ReviewResponse>> structure = new ResponseStructure<>();
+//				structure.setStatusCode(HttpStatus.FOUND.value());
+//				structure.setMessage("Review Records Found");
+//				structure.setData(list);
+//
+//				return new ResponseEntity<ResponseStructure<List<ReviewResponse>>>(structure, HttpStatus.FOUND);
+//			} else {
+//				throw new ReviewDataNotPresent("No Review Data Present!!");
+//			}
+//
+//		} else {
+//			throw new MovieNotFoundByIdException("Movie Id NotFound to Fetch the Data !!");
+//		}
+//		
+		return null;
+	}
+
+	@Override
+	public ResponseEntity<ResponseStructure<List<JobResponse>>> findByJobBasedonCompanyId(int companyId) {
+		Optional<Company> optional = companyRepo.findById(companyId);
+		if (optional.isPresent()) {
+			List<Job> jobList=jobRepo.findByCompanyId(companyId);
+			if (!jobList.isEmpty()) {
+				List<JobResponse> list = new ArrayList<>();
+				for (Job job : jobList) {
+					JobResponse jobResponse = convertJobToJobResponse(job);
+
+					Map<String, String> o = new HashMap<>();
+//						o.put("reviews", "/" + movie.getMovieId() + "/reviews");
+//						movieResponse.setOptions(o);
+
+					list.add(jobResponse);
+				}
+				ResponseStructure<List<JobResponse>> responseStructure = new ResponseStructure<>();
+				responseStructure.setStatusCode(HttpStatus.FOUND.value());
+				responseStructure.setMessage("Job Records Found");
+				responseStructure.setData(list);
+
+				return new ResponseEntity<ResponseStructure<List<JobResponse>>>(responseStructure, HttpStatus.FOUND);
+
+			} else {
+				throw new JobNotFoundByCompanyIdException("Job data is not present Based on Company Id");
+			}
+			
+		} else {
+			throw new CompanyNotFoundByIdException("Company data not present based on Id");
+
 		}
 	}
 

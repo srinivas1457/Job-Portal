@@ -6,6 +6,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 
 @Component
 @Entity
@@ -14,6 +15,10 @@ public class Resume {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int resumeId;
 	private String objective;
+	
+	@OneToOne
+	private User user;
+	
 	public int getResumeId() {
 		return resumeId;
 	}

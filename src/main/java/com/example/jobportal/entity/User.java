@@ -12,6 +12,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 
 @Component
 @Entity
@@ -26,8 +27,21 @@ public class User {
 
 	private UserRole userRole;
 	
+
 	@OneToMany(mappedBy = "user")
-	private List<Company>companiesList=new ArrayList<>();
+	private List<Company> companiesList = new ArrayList<>();
+
+	@OneToOne(mappedBy = "user")
+	private Resume resume;
+
+	
+	public Resume getResume() {
+		return resume;
+	}
+
+	public void setResume(Resume resume) {
+		this.resume = resume;
+	}
 
 	public List<Company> getCompaniesList() {
 		return companiesList;
