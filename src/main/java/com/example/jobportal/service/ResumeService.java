@@ -9,11 +9,17 @@ import com.example.jobportal.responsedto.ResumeResponse;
 import com.example.jobportal.utility.ResponseStructure;
 
 public interface ResumeService {
-	public ResponseEntity<ResponseStructure<ResumeResponse>> addResume(ResumeRequest resumeRequest,int userId);
+	public ResponseEntity<ResponseStructure<ResumeResponse>> addResume(ResumeRequest resumeRequest, int userId);
+
 	public ResponseEntity<ResponseStructure<ResumeResponse>> findByResumeId(int resumeId);
-	public ResponseEntity<ResponseStructure<ResumeResponse>> updateByResumeId(ResumeRequest resumeRequest,int resumeId);
+
+	public ResponseEntity<ResponseStructure<ResumeResponse>> updateByResumeId(ResumeRequest resumeRequest,
+			int resumeId);
+
 	public ResponseEntity<ResponseStructure<ResumeResponse>> deleteByResumeId(int resumeId);
+
 	public ResponseEntity<ResponseStructure<List<ResumeResponse>>> findAll();
 	
+	public ResponseEntity<ResponseStructure<List<ResumeResponse>>> findResumeBySkillName (String skillName);
 
 }

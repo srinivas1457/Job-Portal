@@ -151,7 +151,7 @@ public class ResumeServiceImpl implements ResumeService {
 
 			ResponseStructure<List<ResumeResponse>> structure = new ResponseStructure<>();
 			structure.setStatusCode(HttpStatus.FOUND.value());
-			structure.setMessage("User Records Found");
+			structure.setMessage("Resume Records Found");
 			structure.setData(list);
 
 			return new ResponseEntity<ResponseStructure<List<ResumeResponse>>>(structure, HttpStatus.FOUND);
@@ -159,6 +159,12 @@ public class ResumeServiceImpl implements ResumeService {
 			throw new ResumeNotFoundException("Resume Data Not Present!!");
 		}
 
+	}
+
+	@Override
+	public ResponseEntity<ResponseStructure<List<ResumeResponse>>> findResumeBySkillName(String skillName) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

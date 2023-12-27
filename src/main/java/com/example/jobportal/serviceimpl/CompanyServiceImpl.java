@@ -17,6 +17,7 @@ import com.example.jobportal.entity.User;
 import com.example.jobportal.enums.BusinessType;
 import com.example.jobportal.enums.UserRole;
 import com.example.jobportal.exceptionhandling.CompanyNotFoundByIdException;
+import com.example.jobportal.exceptionhandling.CompanyNotFoundByLocation;
 import com.example.jobportal.exceptionhandling.CompanyNotFoundByNameException;
 import com.example.jobportal.exceptionhandling.CompanyNotFoundException;
 import com.example.jobportal.exceptionhandling.IllegalAccessException;
@@ -259,7 +260,7 @@ public class CompanyServiceImpl implements CompanyService {
 				return new ResponseEntity<ResponseStructure<List<CompanyResponse>>>(responseStructure, HttpStatus.FOUND);
 
 			} else {
-				throw new JobNotFoundByTitleException("Company data is not present");
+				throw new CompanyNotFoundByLocation("Company data is not present based on mentioned location");
 			}
 		
 	}

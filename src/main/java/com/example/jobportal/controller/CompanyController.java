@@ -65,5 +65,10 @@ public class CompanyController {
 	public ResponseEntity<ResponseStructure<List<CompanyResponse>>> findAll() {
 		return companyService.findAll();
 	}
+	
+	@GetMapping("/location/{location}/companies")
+	public ResponseEntity<ResponseStructure<List<CompanyResponse>>> findByLocation(@PathVariable String companyLocation){
+		return companyService.findByLocation(companyLocation);
+	}
 
 }

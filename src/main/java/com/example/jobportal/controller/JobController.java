@@ -40,15 +40,11 @@ public class JobController {
 		return jobService.findByJobId(jobId);
 	}
 	
-	@GetMapping("/jobTitle/{jobTitle}/jobs")
+	@GetMapping("/job-titles/{jobTitle}/jobs")
 	public ResponseEntity<ResponseStructure<List<JobResponse>>> findByJobTitle(@PathVariable String jobTitle){
 		return jobService.findByJobTitle(jobTitle);
 	}
 	
-//	@GetMapping("/{jobLocation}/jobs")
-//	public ResponseEntity<ResponseStructure<List<JobResponse>>> findByLocation(@PathVariable String jobLocation){
-//		return jobService.findByLocation(jobLocation);
-//	}
 	
 	@DeleteMapping("/jobs/{jobId}")
 	public ResponseEntity<ResponseStructure<JobResponse>> deleteByJobId(@PathVariable int jobId){
@@ -58,4 +54,15 @@ public class JobController {
 	public ResponseEntity<ResponseStructure<List<JobResponse>>> findAll(){
 		return jobService.findAll();
 	}
+	
+	@GetMapping("/companies/{companyId}/jobs")
+	public ResponseEntity<ResponseStructure<List<JobResponse>>> findByJobBasedonCompanyId(@PathVariable int companyId){
+		return jobService.findByJobBasedonCompanyId(companyId);
+	}
+	
+	@GetMapping("/locations/{companyLocation}/jobs")
+	public ResponseEntity<ResponseStructure<List<JobResponse>>> findByJobsBasedonCompanyLocation(@PathVariable String companyLocation){
+		return jobService.findByJobsBasedonCompanyLocation(companyLocation);
+	}
+	
 }
