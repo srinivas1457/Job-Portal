@@ -1,10 +1,11 @@
 package com.example.jobportal.exceptionhandling;
 
-public class UserNotFoundException extends RuntimeException {
-
+public class CompanyNotFoundByBussinessTypeException extends RuntimeException {
+	
 	private String mess;
 
-	public UserNotFoundException(String mess) {
+	public CompanyNotFoundByBussinessTypeException(String mess) {
+		
 		this.mess = mess;
 	}
 
@@ -12,5 +13,4 @@ public class UserNotFoundException extends RuntimeException {
 	public String getMessage() {
 		return mess;
 	}
-
 }

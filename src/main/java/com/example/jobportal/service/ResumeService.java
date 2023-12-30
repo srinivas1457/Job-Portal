@@ -20,6 +20,6 @@ public interface ResumeService {
 
 	public ResponseEntity<ResponseStructure<List<ResumeResponse>>> findAll();
 	
-	public ResponseEntity<ResponseStructure<List<ResumeResponse>>> findResumeBySkillName (String skillName);
+	public ResponseEntity<ResponseStructure<List<ResumeResponse>>> findResumeBySkill(int userId,String skillName);
 
 }

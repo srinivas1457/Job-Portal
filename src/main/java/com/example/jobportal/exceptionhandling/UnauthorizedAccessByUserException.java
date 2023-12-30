@@ -1,9 +1,9 @@
 package com.example.jobportal.exceptionhandling;
 
-public class CompanyNotFoundException extends RuntimeException {
+public class UnauthorizedAccessByUserException extends RuntimeException {
 	private String message;
 
-	public CompanyNotFoundException(String message) {
+	public UnauthorizedAccessByUserException(String message) {
 		super();
 		this.message = message;
 	}
@@ -13,5 +13,4 @@ public class CompanyNotFoundException extends RuntimeException {
 		return message;
 	}
 	
-
 }

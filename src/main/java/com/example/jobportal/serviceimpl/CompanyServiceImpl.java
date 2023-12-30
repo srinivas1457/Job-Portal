@@ -12,23 +12,20 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.example.jobportal.entity.Company;
-import com.example.jobportal.entity.Job;
 import com.example.jobportal.entity.User;
 import com.example.jobportal.enums.BusinessType;
 import com.example.jobportal.enums.UserRole;
+import com.example.jobportal.exceptionhandling.CompanyNotFoundByBussinessTypeException;
 import com.example.jobportal.exceptionhandling.CompanyNotFoundByIdException;
 import com.example.jobportal.exceptionhandling.CompanyNotFoundByLocation;
 import com.example.jobportal.exceptionhandling.CompanyNotFoundByNameException;
 import com.example.jobportal.exceptionhandling.CompanyNotFoundException;
 import com.example.jobportal.exceptionhandling.IllegalAccessException;
-import com.example.jobportal.exceptionhandling.JobNotFoundByTitleException;
-import com.example.jobportal.exceptionhandling.UserNotFoundException;
+import com.example.jobportal.exceptionhandling.UserNotFoundByIdException;
 import com.example.jobportal.repository.CompanyRepository;
 import com.example.jobportal.repository.UserRepository;
 import com.example.jobportal.requestdto.CompanyRequest;
 import com.example.jobportal.responsedto.CompanyResponse;
-import com.example.jobportal.responsedto.JobResponse;
-import com.example.jobportal.responsedto.UserResponse;
 import com.example.jobportal.service.CompanyService;
 import com.example.jobportal.utility.ResponseStructure;
 
@@ -95,7 +92,7 @@ public class CompanyServiceImpl implements CompanyService {
 				throw new IllegalAccessException(" This user not Autharised to add Companies");
 
 		} else
-			throw new UserNotFoundException("user with mentioned Id , not found");
+			throw new UserNotFoundByIdException("user with mentioned Id , not found");
 	}
 
 	@Override
@@ -105,6 +102,9 @@ public class CompanyServiceImpl implements CompanyService {
 			Company company = optional.get();
 
 			CompanyResponse companyResponse = convertToCompResponse(company);
+			Map<String, String> o = new HashMap<>();
+			o.put("Jobs", "/companies/" + company.getCompanyId() + "/jobs");
+			companyResponse.setOptions(o);
 
 			ResponseStructure<CompanyResponse> responseStructure = new ResponseStructure<>();
 			responseStructure.setStatusCode(HttpStatus.FOUND.value());
@@ -127,14 +127,14 @@ public class CompanyServiceImpl implements CompanyService {
 
 				CompanyResponse companyResponse = convertToCompResponse(company);
 				Map<String, String> o = new HashMap<>();
-//					o.put("reviews", "/" + movie.getMovieId() + "/reviews");
-//					movieResponse.setOptions(o);
+				o.put("Jobs", "/companies/" + company.getCompanyId() + "/jobs");
+				companyResponse.setOptions(o);
 
 				list.add(companyResponse);
 			}
 			ResponseStructure<List<CompanyResponse>> responseStructure = new ResponseStructure<>();
 			responseStructure.setStatusCode(HttpStatus.FOUND.value());
-			responseStructure.setMessage("Movie Records Found");
+			responseStructure.setMessage("Company Record Found");
 			responseStructure.setData(list);
 
 			return new ResponseEntity<ResponseStructure<List<CompanyResponse>>>(responseStructure, HttpStatus.FOUND);
@@ -154,8 +154,8 @@ public class CompanyServiceImpl implements CompanyService {
 
 				CompanyResponse companyResponse = convertToCompResponse(company);
 				Map<String, String> o = new HashMap<>();
-//				o.put("reviews", "/" + movie.getMovieId() + "/reviews");
-//				movieResponse.setOptions(o);
+				o.put("Jobs", "/companies/" + company.getCompanyId() + "/jobs");
+				companyResponse.setOptions(o);
 
 				list.add(companyResponse);
 			}
@@ -167,7 +167,7 @@ public class CompanyServiceImpl implements CompanyService {
 
 			return new ResponseEntity<ResponseStructure<List<CompanyResponse>>>(structure, HttpStatus.FOUND);
 		} else {
-			throw new CompanyNotFoundException("Company data not found based on :" + businessType2);
+			throw new CompanyNotFoundByBussinessTypeException("Company data not found based on :" + businessType2);
 		}
 	}
 
@@ -214,15 +214,14 @@ public class CompanyServiceImpl implements CompanyService {
 			throw new CompanyNotFoundByIdException("Company data is not present");
 		}
 	}
-	
-	
+
 	@Override
 	public ResponseEntity<ResponseStructure<List<CompanyResponse>>> findAll() {
 
 		List<Company> companyList = companyRepo.findAll();
 		if (!companyList.isEmpty()) {
 			List<CompanyResponse> list = new ArrayList<>();
-			for (Company  company : companyList) {
+			for (Company company : companyList) {
 				CompanyResponse response = convertToCompResponse(company);
 				list.add(response);
 			}
@@ -240,29 +239,29 @@ public class CompanyServiceImpl implements CompanyService {
 
 	@Override
 	public ResponseEntity<ResponseStructure<List<CompanyResponse>>> findByLocation(String companyLocation) {
-			List<Company> companyList = companyRepo.findByLocation(companyLocation);
-			if (!companyList.isEmpty()) {
-				List<CompanyResponse> list = new ArrayList<>();
-				for (Company company : companyList) {
-					CompanyResponse companyResponse=convertToCompResponse(company);
+		List<Company> companyList = companyRepo.findByLocation(companyLocation);
+		if (!companyList.isEmpty()) {
+			List<CompanyResponse> list = new ArrayList<>();
+			for (Company company : companyList) {
+				CompanyResponse companyResponse = convertToCompResponse(company);
 
-					Map<String, String> o = new HashMap<>();
-//						o.put("reviews", "/" + movie.getMovieId() + "/reviews");
-//						movieResponse.setOptions(o);
+				Map<String, String> o = new HashMap<>();
+				o.put("Jobs", "/companies/" + company.getCompanyId() + "/jobs");
+				companyResponse.setOptions(o);
 
-					list.add(companyResponse);
-				}
-				ResponseStructure<List<CompanyResponse>> responseStructure = new ResponseStructure<>();
-				responseStructure.setStatusCode(HttpStatus.FOUND.value());
-				responseStructure.setMessage("Company Records Found");
-				responseStructure.setData(list);
-
-				return new ResponseEntity<ResponseStructure<List<CompanyResponse>>>(responseStructure, HttpStatus.FOUND);
-
-			} else {
-				throw new CompanyNotFoundByLocation("Company data is not present based on mentioned location");
+				list.add(companyResponse);
 			}
-		
+			ResponseStructure<List<CompanyResponse>> responseStructure = new ResponseStructure<>();
+			responseStructure.setStatusCode(HttpStatus.FOUND.value());
+			responseStructure.setMessage("Company Records Found");
+			responseStructure.setData(list);
+
+			return new ResponseEntity<ResponseStructure<List<CompanyResponse>>>(responseStructure, HttpStatus.FOUND);
+
+		} else {
+			throw new CompanyNotFoundByLocation("Company data is not present based on mentioned location");
+		}
+
 	}
 
 }

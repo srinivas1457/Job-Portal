@@ -1,6 +1,5 @@
 package com.example.jobportal.entity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
@@ -10,6 +9,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 
 @Component
@@ -19,12 +19,45 @@ public class Resume {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int resumeId;
 	private String objective;
-	
+
 	@OneToOne
 	private User user;
 
 	@ManyToMany
-	private List<Skill> skills=new ArrayList<>();
+	private List<Skill> skills;
+
+	@OneToMany(mappedBy = "resume")
+	private List<Project> projectList;
+
+	@OneToMany(mappedBy = "resume")
+	private List<Experience> experienceList;
+
+	@OneToMany(mappedBy = "resume")
+	private List<Education> educations;
+
+	public List<Education> getEducations() {
+		return educations;
+	}
+
+	public void setEducations(List<Education> educations) {
+		this.educations = educations;
+	}
+
+	public List<Experience> getExperienceList() {
+		return experienceList;
+	}
+
+	public void setExperienceList(List<Experience> experienceList) {
+		this.experienceList = experienceList;
+	}
+
+	public List<Project> getProjectList() {
+		return projectList;
+	}
+
+	public void setProjectList(List<Project> projectList) {
+		this.projectList = projectList;
+	}
 
 	public int getResumeId() {
 		return resumeId;
@@ -57,7 +90,5 @@ public class Resume {
 	public void setSkills(List<Skill> skills) {
 		this.skills = skills;
 	}
-	
-	
 
 }

@@ -15,7 +15,6 @@ import com.example.jobportal.entity.Company;
 import com.example.jobportal.entity.Job;
 import com.example.jobportal.exceptionhandling.CompanyNotFoundByIdException;
 import com.example.jobportal.exceptionhandling.CompanyNotFoundByLocation;
-import com.example.jobportal.exceptionhandling.JobDataNotPresent;
 import com.example.jobportal.exceptionhandling.JobNotFoundByCompanyIdException;
 import com.example.jobportal.exceptionhandling.JobNotFoundByIdException;
 import com.example.jobportal.exceptionhandling.JobNotFoundByTitleException;
@@ -90,7 +89,7 @@ public class JobServiceImpl implements JobService {
 			Job job = optional.get();
 			JobResponse jobResponse = convertJobToJobResponse(job);
 			Map<String, String> o = new HashMap<>();
-			o.put("companies", "/companies/" +job.getCompany().getCompanyId() );
+			o.put("companies", "/companies/" + job.getCompany().getCompanyId());
 			jobResponse.setOptions(o);
 
 			ResponseStructure<JobResponse> responseStructure = new ResponseStructure<>();
@@ -114,8 +113,8 @@ public class JobServiceImpl implements JobService {
 				JobResponse jobResponse = convertJobToJobResponse(job);
 
 				Map<String, String> o = new HashMap<>();
-					o.put("companies", "/" +job.getCompany().getCompanyId() + "/companies");
-					jobResponse.setOptions(o);
+				o.put("companies", "/companies/" + job.getCompany().getCompanyId());
+				jobResponse.setOptions(o);
 
 				list.add(jobResponse);
 			}
@@ -181,11 +180,11 @@ public class JobServiceImpl implements JobService {
 			List<JobResponse> list = new ArrayList<>();
 			for (Job job : jobs) {
 				JobResponse jobResponse = convertJobToJobResponse(job);
-				
+
 				Map<String, String> o = new HashMap<>();
-				o.put("companies", "/" +job.getCompany().getCompanyId() + "/companies");
+				o.put("companies", "/companies/" + job.getCompany().getCompanyId());
 				jobResponse.setOptions(o);
-				
+
 				list.add(jobResponse);
 			}
 
@@ -205,19 +204,19 @@ public class JobServiceImpl implements JobService {
 			String companyLocation) {
 		List<Company> companies = companyRepo.findByLocation(companyLocation);
 		if (!companies.isEmpty()) {
-			
-			List<Job> jobList=jobRepo.findByCompanyLocation(companyLocation);
+
+			List<Job> jobList = jobRepo.findByCompanyLocation(companyLocation);
 			if (!jobList.isEmpty()) {
 				List<JobResponse> list = new ArrayList<>();
 				for (Job job : jobList) {
 
 					JobResponse jobResponse = convertJobToJobResponse(job);
 
-//					Map<String, String> companyHyperLink = new HashMap<>();
-//					companyHyperLink.put("companies", "/companies/"+job.getCompany().getCompanyId());
-//					jobResponse.setOptions(companyHyperLink);
+					Map<String, String> companyHyperLink = new HashMap<>();
+					companyHyperLink.put("companies", "/companies/" + job.getCompany().getCompanyId());
+					jobResponse.setOptions(companyHyperLink);
 					list.add(jobResponse);
-		
+
 				}
 
 				ResponseStructure<List<JobResponse>> structure = new ResponseStructure<>();
@@ -227,27 +226,27 @@ public class JobServiceImpl implements JobService {
 
 				return new ResponseEntity<ResponseStructure<List<JobResponse>>>(structure, HttpStatus.FOUND);
 			} else {
-				throw new JobDataNotPresent("No Jobs Data Present!!");
+				throw new JobNotFoundException("No Jobs Data Present!!");
 			}
 
 		} else {
 			throw new CompanyNotFoundByLocation("company Location NotFound to Fetch the Data !!");
-		}	
+		}
 	}
-	
+
 	@Override
 	public ResponseEntity<ResponseStructure<List<JobResponse>>> findByJobBasedonCompanyId(int companyId) {
 		Optional<Company> optional = companyRepo.findById(companyId);
 		if (optional.isPresent()) {
-			List<Job> jobList=jobRepo.findByCompanyId(companyId);
+			List<Job> jobList = jobRepo.findByCompanyId(companyId);
 			if (!jobList.isEmpty()) {
 				List<JobResponse> list = new ArrayList<>();
 				for (Job job : jobList) {
 					JobResponse jobResponse = convertJobToJobResponse(job);
 
 					Map<String, String> o = new HashMap<>();
-						o.put("companies", "/" + job.getCompany().getCompanyId() + "/companies");
-						jobResponse.setOptions(o);
+					o.put("companies", "/companies/" + job.getCompany().getCompanyId());
+					jobResponse.setOptions(o);
 
 					list.add(jobResponse);
 				}
@@ -261,7 +260,7 @@ public class JobServiceImpl implements JobService {
 			} else {
 				throw new JobNotFoundByCompanyIdException("Job data is not present Based on Company Id");
 			}
-			
+
 		} else {
 			throw new CompanyNotFoundByIdException("Company data not present based on Id");
 

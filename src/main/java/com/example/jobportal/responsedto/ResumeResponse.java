@@ -26,6 +26,4 @@ public class ResumeResponse {
 	public void setObjective(String objective) {
 		this.objective = objective;
 	}
-	
-
 }

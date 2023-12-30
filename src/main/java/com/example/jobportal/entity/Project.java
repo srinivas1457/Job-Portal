@@ -4,6 +4,7 @@ import java.util.Set;
 
 import org.springframework.stereotype.Component;
 
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -18,6 +19,7 @@ public class Project {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int projectId;
 	private String projectName;
+	@ElementCollection
 	private Set<String> techStack;
 	private String description;
 	private String website;

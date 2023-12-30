@@ -1,9 +1,9 @@
 package com.example.jobportal.exceptionhandling;
 
-public class CompanyNotFoundException extends RuntimeException {
+public class ResumesNotFoundBySkillException extends RuntimeException {
 	private String message;
 
-	public CompanyNotFoundException(String message) {
+	public ResumesNotFoundBySkillException(String message) {
 		super();
 		this.message = message;
 	}
@@ -12,6 +12,4 @@ public class CompanyNotFoundException extends RuntimeException {
 	public String getMessage() {
 		return message;
 	}
-	
-
 }

@@ -1,6 +1,5 @@
 package com.example.jobportal.entity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
@@ -29,7 +28,7 @@ public class User {
 	
 
 	@OneToMany(mappedBy = "user")
-	private List<Company> companiesList = new ArrayList<>();
+	private List<Company> companiesList;
 
 	@OneToOne(mappedBy = "user")
 	private Resume resume;

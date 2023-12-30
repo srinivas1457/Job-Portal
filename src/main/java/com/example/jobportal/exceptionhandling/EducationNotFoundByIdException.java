@@ -1,15 +1,14 @@
 package com.example.jobportal.exceptionhandling;
 
-public class JobDataNotPresent extends RuntimeException {
+public class EducationNotFoundByIdException extends RuntimeException {
 	private String message;
 
-	public JobDataNotPresent(String message) {
+	public EducationNotFoundByIdException(String message) {
 		this.message = message;
 	}
 
 	@Override
 	public String getMessage() {
-		return super.getMessage();
+		return message;
 	}
-
 }
