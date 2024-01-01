@@ -17,7 +17,7 @@ public interface SocialProfileService {
 
 	public ResponseEntity<ResponseStructure<List<SocialProfileResponse>>> findByResumeId(int resumeId);
 
-	public ResponseEntity<ResponseStructure<SocialProfileResponse>> updateById(int socialProfileId);
+	public ResponseEntity<ResponseStructure<SocialProfileResponse>> updateById(SocialProfileRequest socialProfileRequest,int socialProfileId);
 
 	public ResponseEntity<ResponseStructure<SocialProfileResponse>> deleteById(int socialProfileId);
 

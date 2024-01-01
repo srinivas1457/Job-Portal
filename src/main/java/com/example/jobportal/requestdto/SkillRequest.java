@@ -1,7 +1,5 @@
 package com.example.jobportal.requestdto;
 
-import java.util.ArrayList;
-
 public class SkillRequest {
 	private String[] skills;
 

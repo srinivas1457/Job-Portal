@@ -314,5 +314,15 @@ public class ApplicationHandler extends ResponseEntityExceptionHandler {
 
 		return new ResponseEntity<ErrorStructure<String>>(es, HttpStatus.NOT_FOUND);
 	}
+	
+	@ExceptionHandler(SocialProfileNotFoundByIdException.class)
+	public ResponseEntity<ErrorStructure<String>> SocialProfileNotFoundById(SocialProfileNotFoundByIdException exp) {
+		ErrorStructure<String> es = new ErrorStructure<String>();
+		es.setStatusCode(HttpStatus.NOT_FOUND.value());
+		es.setMessage(exp.getMessage()); // message what we throw in service
+		es.setErrordata("SocialProfiles Details With Given Id NOT PRESENT ");
+
+		return new ResponseEntity<ErrorStructure<String>>(es, HttpStatus.NOT_FOUND);
+	}
 
 }

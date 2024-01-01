@@ -13,18 +13,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.example.jobportal.entity.Education;
-import com.example.jobportal.entity.Experience;
 import com.example.jobportal.entity.Resume;
 import com.example.jobportal.enums.DegreeType;
 import com.example.jobportal.exceptionhandling.EducationListNotFoundException;
 import com.example.jobportal.exceptionhandling.EducationNotFoundByIdException;
-import com.example.jobportal.exceptionhandling.ExperienceNotFoundException;
 import com.example.jobportal.exceptionhandling.ResumeNotFoundByIdException;
 import com.example.jobportal.repository.EducationRepository;
 import com.example.jobportal.repository.ResumeRepository;
 import com.example.jobportal.requestdto.EducationRequest;
 import com.example.jobportal.responsedto.EducationResponse;
-import com.example.jobportal.responsedto.ExperienceResponse;
 import com.example.jobportal.service.EducationService;
 import com.example.jobportal.utility.ResponseStructure;
 
@@ -205,11 +202,10 @@ public class EducationServiceImpl implements EducationService {
 	public ResponseEntity<ResponseStructure<EducationResponse>> deleteByEducationId(int educationId) {
 		Optional<Education> optional = educationRepo.findById(educationId);
 		if (optional.isPresent()) {
-
 			EducationResponse educationResponse = convertToEducationResponse(optional.get());
 
 			educationRepo.delete(optional.get());
-
+			
 			ResponseStructure<EducationResponse> responseStructure = new ResponseStructure<>();
 			responseStructure.setStatusCode(HttpStatus.OK.value());
 			responseStructure.setMessage("Education Details Deleted Successfully !!");

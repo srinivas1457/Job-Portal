@@ -3,8 +3,6 @@ package com.example.jobportal.responsedto;
 import java.time.LocalDate;
 import java.util.Map;
 
-import com.example.jobportal.enums.JobStatus;
-
 public class JobResponse {
 	private int jobId;
 	private String jobTitle;
