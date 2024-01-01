@@ -5,10 +5,10 @@ import java.time.LocalDate;
 public class ExperienceRequest {
 	private int experienceId;
 	private String companyName;
-	private String Designation;
+	private String designation;
 	private LocalDate startingDate;
 	private LocalDate endDate;
-	private String Description;
+	private String description;
 
 	public int getExperienceId() {
 		return experienceId;
@@ -27,11 +27,11 @@ public class ExperienceRequest {
 	}
 
 	public String getDesignation() {
-		return Designation;
+		return designation;
 	}
 
 	public void setDesignation(String designation) {
-		Designation = designation;
+		this.designation = designation;
 	}
 
 	public LocalDate getStartingDate() {
@@ -51,11 +51,11 @@ public class ExperienceRequest {
 	}
 
 	public String getDescription() {
-		return Description;
+		return description;
 	}
 
 	public void setDescription(String description) {
-		Description = description;
+		this.description = description;
 	}
 
 }

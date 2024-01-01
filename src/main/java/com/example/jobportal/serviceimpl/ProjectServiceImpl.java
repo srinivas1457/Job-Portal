@@ -161,9 +161,9 @@ public class ProjectServiceImpl implements ProjectService {
 
 			Project oldProject = optpro.get();
 
-			Project newProject = convertToProject(projectRequest, oldProject);
+			Project Project1 = convertToProject(projectRequest, oldProject);
 
-			Project project = projectRepo.save(newProject);
+			Project project = projectRepo.save(Project1);
 			ProjectResponse projectResponse = convertToProjectResponse(project);
 
 			ResponseStructure<ProjectResponse> responseStructure = new ResponseStructure<>();

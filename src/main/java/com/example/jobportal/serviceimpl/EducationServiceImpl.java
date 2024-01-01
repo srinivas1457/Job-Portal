@@ -1,6 +1,7 @@
 package com.example.jobportal.serviceimpl;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,14 +13,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.example.jobportal.entity.Education;
+import com.example.jobportal.entity.Experience;
 import com.example.jobportal.entity.Resume;
 import com.example.jobportal.enums.DegreeType;
+import com.example.jobportal.exceptionhandling.EducationListNotFoundException;
 import com.example.jobportal.exceptionhandling.EducationNotFoundByIdException;
+import com.example.jobportal.exceptionhandling.ExperienceNotFoundException;
 import com.example.jobportal.exceptionhandling.ResumeNotFoundByIdException;
 import com.example.jobportal.repository.EducationRepository;
 import com.example.jobportal.repository.ResumeRepository;
 import com.example.jobportal.requestdto.EducationRequest;
 import com.example.jobportal.responsedto.EducationResponse;
+import com.example.jobportal.responsedto.ExperienceResponse;
 import com.example.jobportal.service.EducationService;
 import com.example.jobportal.utility.ResponseStructure;
 
@@ -62,9 +67,6 @@ public class EducationServiceImpl implements EducationService {
 		educationResponse.setEndDate(education.getEndDate());
 		educationResponse.setPercentage(education.getPercentage());
 		educationResponse.setPresent(education.isPresent());
-		Map<String, String> links = new HashMap<>();
-		links.put("User Resume", "/resumes/" + education.getResume().getResumeId());
-		educationResponse.setOptions(links);
 		return educationResponse;
 	}
 
@@ -75,21 +77,29 @@ public class EducationServiceImpl implements EducationService {
 		if (optional.isPresent()) {
 			Resume resume = optional.get();
 
-			// Check if Metriculation or Intermediate already exists in the database
-			boolean metriculationOrIntermediateExists = resume.getEducations().stream()
-					.anyMatch(education -> education.getDegreeType() == DegreeType.METRICULATION
-							|| education.getDegreeType() == DegreeType.INTERMEDIATE);
+			DegreeType degreeType = educationRequest.getDegreeType();
+
+			// Check if Metriculation already exists in the database
+			boolean METRICULATIONExists = resume.getEducations().stream()
+					.anyMatch(education -> education.getDegreeType() == DegreeType.METRICULATION);
+			// Check if Intermediate already exists in the database
+			boolean INTERMEDIATEExists = resume.getEducations().stream()
+					.anyMatch(education -> education.getDegreeType() == DegreeType.INTERMEDIATE);
 
 			// If Metriculation or Intermediate exists, do not allow adding other
 			// DegreeTypes
-			if (metriculationOrIntermediateExists && (educationRequest.getDegreeType() == DegreeType.METRICULATION
-					|| educationRequest.getDegreeType() == DegreeType.INTERMEDIATE)) {
-				throw new IllegalStateException("Metriculation or Intermediate already exists in the database.");
+			if ((METRICULATIONExists && degreeType == DegreeType.METRICULATION)
+					|| (INTERMEDIATEExists && degreeType == DegreeType.INTERMEDIATE)) {
+				throw new IllegalStateException(degreeType + " already exists in the database.");
 			}
 
 			// Create a new education object and convert the request to education
 			Education education = new Education();
 			education = convertToEducation(educationRequest, education);
+
+			education.setResume(resume);
+
+			educationRepo.save(education);
 
 			// Add the new education to the list of educations in the resume
 			resume.getEducations().add(education);
@@ -97,26 +107,30 @@ public class EducationServiceImpl implements EducationService {
 			// Save the updated resume back to the database
 			resumeRepo.save(resume);
 
-			EducationResponse educationResponse=convertToEducationResponse(education);
-			ResponseStructure<EducationResponse>responseStructure=new ResponseStructure<>();
+			EducationResponse educationResponse = convertToEducationResponse(education);
+			Map<String, String> links = new HashMap<>();
+			links.put("Applicant Profile", "/resumes/" + education.getResume().getResumeId());
+			educationResponse.setOptions(links);
+
+			ResponseStructure<EducationResponse> responseStructure = new ResponseStructure<>();
 			responseStructure.setStatusCode(HttpStatus.CREATED.value());
 			responseStructure.setMessage("Education Added to Resume Successfully ");
 			responseStructure.setData(educationResponse);
-			return new ResponseEntity<ResponseStructure<EducationResponse>>(responseStructure,HttpStatus.CREATED);
-			
+			return new ResponseEntity<ResponseStructure<EducationResponse>>(responseStructure, HttpStatus.CREATED);
+
 		} else {
 			throw new ResumeNotFoundByIdException("Resume Data Not Found By Given Id");
 		}
 	}
-
-	
 
 	@Override
 	public ResponseEntity<ResponseStructure<EducationResponse>> findByEducationId(int educationId) {
 		Optional<Education> optional = educationRepo.findById(educationId);
 		if (optional.isPresent()) {
 			EducationResponse educationResponse = convertToEducationResponse(optional.get());
-
+			Map<String, String> links = new HashMap<>();
+			links.put("Applicant Profile", "/resumes/" + optional.get().getResume().getResumeId());
+			educationResponse.setOptions(links);
 			ResponseStructure<EducationResponse> responseStructure = new ResponseStructure<>();
 			responseStructure.setStatusCode(HttpStatus.FOUND.value());
 			responseStructure.setMessage("Education Details Found");
@@ -131,8 +145,38 @@ public class EducationServiceImpl implements EducationService {
 
 	@Override
 	public ResponseEntity<ResponseStructure<List<EducationResponse>>> findEducationByResumeId(int resumeId) {
-		// TODO Auto-generated method stub
-		return null;
+
+		Optional<Resume> optionalResume = resumeRepo.findById(resumeId);
+
+		if (optionalResume.isPresent()) {
+
+			Resume resume = optionalResume.get();
+
+			List<Education> educationList = resume.getEducations();
+
+			if (!educationList.isEmpty()) {
+
+				ArrayList<EducationResponse> responseList = new ArrayList<>();
+				Map<String, String> link = new HashMap<>();
+				for (Education education : educationList) {
+					EducationResponse educationResponse = convertToEducationResponse(education);
+					link.put("Developer Profile", "/resumes/" + resume.getResumeId());
+					educationResponse.setOptions(link);
+					responseList.add(educationResponse);
+
+				}
+
+				ResponseStructure<List<EducationResponse>> responseStructure = new ResponseStructure<>();
+				responseStructure.setStatusCode(HttpStatus.FOUND.value());
+				responseStructure.setMessage(" Education data Found successfully");
+				responseStructure.setData(responseList);
+
+				return new ResponseEntity<ResponseStructure<List<EducationResponse>>>(responseStructure,
+						HttpStatus.FOUND);
+			} else
+				throw new EducationListNotFoundException(" This Applicant Education Details not presnt");
+		} else
+			throw new ResumeNotFoundByIdException(" Resume with given Id Not Found");
 	}
 
 	@Override
@@ -147,7 +191,7 @@ public class EducationServiceImpl implements EducationService {
 
 			ResponseStructure<EducationResponse> responseStructure = new ResponseStructure<>();
 			responseStructure.setStatusCode(HttpStatus.OK.value());
-			responseStructure.setMessage("Education Details Deleted Successfully !!");
+			responseStructure.setMessage("Education Details updated Successfully !!");
 			responseStructure.setData(educationResponse);
 
 			return new ResponseEntity<ResponseStructure<EducationResponse>>(responseStructure, HttpStatus.OK);

@@ -12,7 +12,6 @@ public class EducationRequest {
 	private String fieldOfStudy;
 	private LocalDate startingDate;
 	private LocalDate endDate;
-	private boolean present;
 	private Double percentage;
 
 	public String getInstitutionName() {
@@ -61,14 +60,6 @@ public class EducationRequest {
 
 	public void setEndDate(LocalDate endDate) {
 		this.endDate = endDate;
-	}
-
-	public boolean isPresent() {
-		return present;
-	}
-
-	public void setPresent(boolean present) {
-		this.present = present;
 	}
 
 	public Double getPercentage() {

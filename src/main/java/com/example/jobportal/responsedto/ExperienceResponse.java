@@ -7,22 +7,14 @@ public class ExperienceResponse {
 
 	private int experienceId;
 	private String companyName;
-	private String Designation;
+	private String designation;
 	private LocalDate startingDate;
 	private LocalDate endDate;
 	private boolean present;
-	private String Description;
-	private  Double workExperience;
-
-	public Double getWorkExperience() {
-		return workExperience;
-	}
-
-	public void setWorkExperience(Double workExperience) {
-		this.workExperience = workExperience;
-	}
-
-	Map<String, String> options;
+	private String description;
+	private String workExperience;
+	
+	private Map<String, String> options;
 
 	public int getExperienceId() {
 		return experienceId;
@@ -41,11 +33,11 @@ public class ExperienceResponse {
 	}
 
 	public String getDesignation() {
-		return Designation;
+		return designation;
 	}
 
 	public void setDesignation(String designation) {
-		Designation = designation;
+		this.designation = designation;
 	}
 
 	public LocalDate getStartingDate() {
@@ -73,11 +65,19 @@ public class ExperienceResponse {
 	}
 
 	public String getDescription() {
-		return Description;
+		return description;
 	}
 
 	public void setDescription(String description) {
-		Description = description;
+		this.description = description;
+	}
+
+	public String getWorkExperience() {
+		return workExperience;
+	}
+
+	public void setWorkExperience(String workExperience) {
+		this.workExperience = workExperience;
 	}
 
 	public Map<String, String> getOptions() {
@@ -87,5 +87,7 @@ public class ExperienceResponse {
 	public void setOptions(Map<String, String> options) {
 		this.options = options;
 	}
+	
+	
 
 }

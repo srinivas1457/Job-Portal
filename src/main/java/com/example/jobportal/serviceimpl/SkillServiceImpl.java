@@ -1,8 +1,12 @@
 package com.example.jobportal.serviceimpl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -56,9 +60,10 @@ public class SkillServiceImpl implements SkillService {
 
 		Skill oldSkill = skillRepo.findBySkillName(skill);
 		if (oldSkill == null) {
-			Skill newskill = new Skill();
-			skillRepo.save(newskill);
-			return newskill;
+			Skill newSkill = new Skill();
+			newSkill.setSkillName(skill);
+			skillRepo.save(newSkill);
+			return newSkill;
 
 		} else
 			return oldSkill;
@@ -178,7 +183,7 @@ public class SkillServiceImpl implements SkillService {
 	}
 
 	@Override
-	public ResponseEntity<ResponseStructure<List<SkillResponse>>> getSkillsForResume(int resumeId) {
+	public ResponseEntity<ResponseStructure<List<SkillResponse>>> getSkillsFromResume(int resumeId) {
 
 		Resume resume = resumeRepo.findById(resumeId).orElseThrow(()
 				->new ResumeNotFoundByIdException("Resume not found with id "+resumeId));
@@ -202,11 +207,28 @@ public class SkillServiceImpl implements SkillService {
 		Resume resume = resumeRepo.findById(resumeId).orElseThrow(()
 				->new ResumeNotFoundByIdException("Resume not found with id "+resumeId));
 		
-		List<Skill> updatedskillList = convertToSkill(updatedSkillsRequest);   
-		resume.setSkills(updatedskillList);
-		resumeRepo.save(resume);
 		
-		List<SkillResponse> skillResponseList = convertToSkillResponse(updatedskillList);
+		List<Skill> updatedSkillList = convertToSkill(updatedSkillsRequest);
+		List<Skill> existingSkillList=resume.getSkills();
+		
+		 // Remove duplicates based on skillName
+	    Map<String, Skill> skillMap = new HashMap<>();
+	    for (Skill existingSkill : existingSkillList) {
+	        skillMap.put(existingSkill.getSkillName(), existingSkill);
+	    }
+
+	    for (Skill updatedSkill : updatedSkillList) {
+	        skillMap.put(updatedSkill.getSkillName(), updatedSkill);
+	    }
+
+	    // Set the updated skill list to the resume
+	    existingSkillList = new ArrayList<>(skillMap.values());
+	    resume.setSkills(existingSkillList);
+
+	    // Save the updated resume
+	    resumeRepo.save(resume);
+		
+		List<SkillResponse> skillResponseList = convertToSkillResponse(updatedSkillList);
 		
 		ResponseStructure<List<SkillResponse>> responseStructure=new ResponseStructure<>();
 		responseStructure.setData(skillResponseList);

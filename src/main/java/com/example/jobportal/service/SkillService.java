@@ -17,7 +17,7 @@ public interface SkillService {
 	public ResponseEntity<ResponseStructure<SkillResponse>> deleteById(int SkillId);
 	public ResponseEntity<ResponseStructure<List<SkillResponse>>> findAll();
 	public ResponseEntity<ResponseStructure<List<SkillResponse>>> insertSkill(SkillRequest skillRequest, int resumeId);
-	public ResponseEntity<ResponseStructure<List<SkillResponse>>> getSkillsForResume(int resumeId);
+	public ResponseEntity<ResponseStructure<List<SkillResponse>>> getSkillsFromResume(int resumeId);
 	public ResponseEntity<ResponseStructure<List<SkillResponse>>> updateSkillsForResume(
 			@Valid SkillRequest updatedSkillsRequest, int resumeId);
 

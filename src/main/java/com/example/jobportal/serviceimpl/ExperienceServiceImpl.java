@@ -1,6 +1,7 @@
 package com.example.jobportal.serviceimpl;
 
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,17 +14,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.example.jobportal.entity.Experience;
-import com.example.jobportal.entity.Project;
 import com.example.jobportal.entity.Resume;
 import com.example.jobportal.exceptionhandling.ExperienceNotFoundByIdException;
 import com.example.jobportal.exceptionhandling.ExperienceNotFoundException;
-import com.example.jobportal.exceptionhandling.ProjectNotFoundException;
 import com.example.jobportal.exceptionhandling.ResumeNotFoundByIdException;
 import com.example.jobportal.repository.ExperienceRepository;
 import com.example.jobportal.repository.ResumeRepository;
 import com.example.jobportal.requestdto.ExperienceRequest;
 import com.example.jobportal.responsedto.ExperienceResponse;
-import com.example.jobportal.responsedto.ProjectResponse;
 import com.example.jobportal.service.ExperienceService;
 import com.example.jobportal.utility.ResponseStructure;
 
@@ -38,8 +36,8 @@ public class ExperienceServiceImpl implements ExperienceService {
 
 	private Experience convertToExperience(ExperienceRequest experienceRequest, Experience experience) {
 		experience.setCompanyName(experienceRequest.getCompanyName());
-		experience.setDescription(experienceRequest.getDescription());
 		experience.setDesignation(experienceRequest.getDesignation());
+		experience.setDescription(experienceRequest.getDescription());
 		experience.setStartingDate(experienceRequest.getStartingDate());
 		experience.setEndDate(experienceRequest.getEndDate());
 
@@ -67,13 +65,19 @@ public class ExperienceServiceImpl implements ExperienceService {
 		return experienceResponse;
 	}
 
-	private Double workExperience(LocalDate endDate, LocalDate startingDate) {
+	private String workExperience(LocalDate endDate, LocalDate startingDate) {
 		if (endDate == null) {
 			endDate = LocalDate.now();
-			return experienceRepo.findWorkExperience(endDate, startingDate);
-		} else {
-			return experienceRepo.findWorkExperience(endDate, startingDate);
 		}
+		/*
+		 * LocalDate date1 = LocalDate.of(2023, 1, 1); LocalDate date2 =
+		 * LocalDate.of(2024, 1, 1); Period period = Period.between(date1, date2); int
+		 * diffInYears = period.getYears(); int diffInMonths = period.getMonths(); int
+		 * diffInDays = period.getDays();
+		 */
+
+		Period period = Period.between(startingDate, endDate);
+		return period.getYears() + " year " + period.getMonths() + " Months";
 
 	}
 
@@ -82,15 +86,15 @@ public class ExperienceServiceImpl implements ExperienceService {
 			int resumeId) {
 		Optional<Resume> optional = resumeRepo.findById(resumeId);
 		if (optional.isPresent()) {
+			Resume resume = optional.get();
 			Experience experience = convertToExperience(experienceRequest, new Experience());
+			experience.setResume(resume);
 			Experience experience2 = experienceRepo.save(experience);
-			
-			 // Add the new Experience to the list of Experience  in the resume
-	        Resume resume = optional.get();
-	        resume.getExperienceList().add(experience2);
-	        // Save the updated resume back to the database
-	        resumeRepo.save(resume);
-			
+			// Add the new Experience to the list of Experience in the resume
+			resume.getExperienceList().add(experience2);
+			// Save the updated resume back to the database
+			resumeRepo.save(resume);
+
 			ExperienceResponse experienceResponse = convertToExperienceResponse(experience);
 
 			ResponseStructure<ExperienceResponse> responseStructure = new ResponseStructure<>();
@@ -122,25 +126,24 @@ public class ExperienceServiceImpl implements ExperienceService {
 				Map<String, String> hashMap = new HashMap<>();
 				for (Experience experience : experienceList) {
 
-					ExperienceResponse  experienceResponse = convertToExperienceResponse(experience);
-					hashMap.put("Developer Profile", "/resumes/" + resume.getResumeId());
+					ExperienceResponse experienceResponse = convertToExperienceResponse(experience);
+					hashMap.put("Applicant Profile", "/resumes/" + resume.getResumeId());
 					experienceResponse.setOptions(hashMap);
 					responseList.add(experienceResponse);
 
 				}
 
-				ResponseStructure<List<ExperienceResponse>> respStruc = new ResponseStructure<>();
-				respStruc.setStatusCode(HttpStatus.CREATED.value());
-				respStruc.setMessage(" Project data Found successfully");
-				respStruc.setData(responseList);
+				ResponseStructure<List<ExperienceResponse>> responseStructure = new ResponseStructure<>();
+				responseStructure.setStatusCode(HttpStatus.FOUND.value());
+				responseStructure.setMessage("Experience data Found successfully");
+				responseStructure.setData(responseList);
 
-				return new ResponseEntity<ResponseStructure<List<ExperienceResponse>>>(respStruc, HttpStatus.CREATED);
+				return new ResponseEntity<ResponseStructure<List<ExperienceResponse>>>(responseStructure,
+						HttpStatus.FOUND);
 			} else
 				throw new ExperienceNotFoundException(" This user has no Experience to display");
-
 		} else
 			throw new ResumeNotFoundByIdException(" Resume with given Id Not Found");
-
 	}
 
 	@Override

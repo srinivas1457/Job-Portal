@@ -53,7 +53,7 @@ public class SkillController {
 
 	@GetMapping("/resumes/{resumeId}/get-skills/skills")
 	public ResponseEntity<ResponseStructure<List<SkillResponse>>> getSkillsForResume(@PathVariable int resumeId) {
-		return skillService.getSkillsForResume(resumeId);
+		return skillService.getSkillsFromResume(resumeId);
 	}
 
 	@PutMapping("/resumes/{resumeId}/skills")

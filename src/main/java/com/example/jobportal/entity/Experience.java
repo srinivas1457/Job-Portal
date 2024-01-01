@@ -17,14 +17,14 @@ public class Experience {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int experienceId;
 	private String companyName;
-	private String Designation;
+	private String designation;
 	private LocalDate startingDate;
 	private LocalDate endDate;
 	private boolean present;
-	private String Description;
-	
+	private String description;
+
 	@ManyToOne
-	private Resume  resume;
+	private Resume resume;
 
 	public Resume getResume() {
 		return resume;
@@ -51,11 +51,11 @@ public class Experience {
 	}
 
 	public String getDesignation() {
-		return Designation;
+		return designation;
 	}
 
 	public void setDesignation(String designation) {
-		Designation = designation;
+		this.designation = designation;
 	}
 
 	public LocalDate getStartingDate() {
@@ -83,10 +83,10 @@ public class Experience {
 	}
 
 	public String getDescription() {
-		return Description;
+		return description;
 	}
 
 	public void setDescription(String description) {
-		Description = description;
+		this.description =description;
 	}
 }
